@@ -20,6 +20,7 @@
 
 #include <esp_err.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // Initialize the thermal monitor.
 //
@@ -35,8 +36,17 @@
 // The thermal fault flag automatically clears when temperature drops
 // back below 75°C (no manual reset needed).
 //
+// endpoint_id points at the Matter endpoint id whose OnOff attribute is
+// updated on thermal fault. Each variant passes the address of its own global
+// (e.g. &light_endpoint_id or &relay_endpoint_id), so this file stays
+// variant-agnostic. A pointer (rather than a value) is required because
+// thermal_init() is called before the endpoint is created and the id assigned;
+// the monitor task dereferences it lazily at fault time, by which point the
+// global holds the real endpoint id. The pointer must outlive the monitor
+// (the variant globals have static storage duration, so this holds).
+//
 // Returns ESP_OK on success, error code on failure.
-esp_err_t thermal_init(void);
+esp_err_t thermal_init(const uint16_t *endpoint_id);
 
 // Returns true if the thermal monitor has tripped and is currently
 // blocking relay activation. Used by relay control code to refuse

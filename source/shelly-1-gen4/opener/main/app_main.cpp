@@ -245,7 +245,7 @@ extern "C" void app_main()
     // thermal second so overtemp protection is active as early as possible.
     // contact_sensor and button last for user-facing inputs.
     relay_init();
-    thermal_init();
+    thermal_init(&relay_endpoint_id);
     contact_sensor_init();
     shelly_button_handle_t button_handle = button_init();
     app_reset_button_register(button_handle);
