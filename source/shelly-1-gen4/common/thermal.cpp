@@ -29,10 +29,6 @@
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 
-// Defined in app_main.cpp. Used to know which Matter endpoint's OnOff
-// attribute to update on thermal fault.
-extern uint16_t relay_endpoint_id;
-
 static const char *TAG = "thermal";
 
 // Trip threshold: sustained 75°C for 10 seconds.
@@ -52,6 +48,12 @@ static const char *TAG = "thermal";
 static temperature_sensor_handle_t temp_sensor = NULL;
 static int64_t over_temp_start_ms = 0;
 static volatile bool fault_active = false;
+
+// Points at the variant's Matter endpoint id global. Read lazily at fault time
+// (not captured by value) because thermal_init() runs before the endpoint is
+// created and the id assigned. Keeps this file independent of any particular
+// global symbol name.
+static const uint16_t *s_thermal_endpoint_id = nullptr;
 
 static void thermal_check(void)
 {
@@ -80,10 +82,12 @@ static void thermal_check(void)
                 //    the state change.
                 relay_set(false);
 
-                uint32_t cluster_id = OnOff::Id;
-                uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
-                esp_matter_attr_val_t val = esp_matter_bool(false);
-                attribute::update(relay_endpoint_id, cluster_id, attribute_id, &val);
+                if (s_thermal_endpoint_id != nullptr) {
+                    uint32_t cluster_id = OnOff::Id;
+                    uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
+                    esp_matter_attr_val_t val = esp_matter_bool(false);
+                    attribute::update(*s_thermal_endpoint_id, cluster_id, attribute_id, &val);
+                }
             }
         }
     } else {
@@ -101,8 +105,10 @@ static void thermal_monitor_task(void *arg)
     }
 }
 
-esp_err_t thermal_init(void)
+esp_err_t thermal_init(const uint16_t *endpoint_id)
 {
+    s_thermal_endpoint_id = endpoint_id;
+
     temperature_sensor_config_t temp_cfg = {
         .range_min = 20,
         .range_max = 100,
