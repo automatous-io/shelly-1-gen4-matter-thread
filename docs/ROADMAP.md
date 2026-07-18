@@ -25,8 +25,7 @@ This document tracks the current known limitations and the planned work. To prio
 - Shelly 1PM Gen4 support.
 - Shelly 2PM Gen4 support.
 - Shelly Flood Gen4 support.
-- Temperature sensor endpoint on the Shelly 1 Gen4 variants, matching the one released with the 1 Mini Gen4.
-- NTC on devices that carry one instead of internal die temperature.
+- NTC on devices that carry one instead of reporting internal die temperature.
 - A Sleepy End Device variant for battery and solar constrained installs, trading mesh extension for lower power.
 - Build ergonomics. Migrate the build to consume esp-matter through the component library instead of a separately installed SDK, and fold the C6 and Thread settings into the base sdkconfig.defaults, so a plain `idf.py build` works without extra setup.
 - Shared components directory across all variant builds.

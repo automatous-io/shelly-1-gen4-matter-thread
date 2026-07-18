@@ -6,6 +6,16 @@ Each firmware variant versions independently, and releases are grouped by device
 
 ## Shelly 1 Gen4, all variants
 
+### [2.1.0] - 2026-07-18
+
+Temperature sensor endpoint across all four variants, and a thermal task stack fix.
+
+#### Added
+- Temperature sensor endpoint reporting the ESP32-C6 die temperature, updated on changes of 0.5°C or more. The reading is null until the first poll after the Matter stack starts.
+
+#### Fixed
+- Thermal monitor task stack overflow. Publishing readings through `attribute::update()` runs Matter reporting on the thermal task's stack, and the previous 2048-byte stack overflowed. The stack is now 4096 bytes, which also covers the thermal-fault OnOff update that has always shared this stack.
+
 ### [2.0.0] - 2026-06-25
 
 Web UI install, Matter OTA updates, and a stock-aligned partition layout, the same change across all four variants. Within a variant's v1.x line the NVS schema is stable, and an in-place upgrade through the ESP-IDF CLI preserves commissioning. Moving from any v1.x build to 2.0.0 is the exception: the partition layout changed and requires a one-time full reflash that erases commissioning, after which Matter OTA preserves it for future updates.

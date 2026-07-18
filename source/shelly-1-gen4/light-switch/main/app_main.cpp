@@ -61,6 +61,7 @@ using namespace chip::DeviceLayer;
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
 uint16_t switch_endpoint_id = 0;
+uint16_t temperature_endpoint_id = 0;
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
@@ -281,6 +282,20 @@ extern "C" void app_main()
 
     switch_endpoint_id = endpoint::get_id(switch_endpoint);
     ESP_LOGI(TAG, "Switch created with endpoint_id %d", switch_endpoint_id);
+
+    // Temperature Sensor endpoint exposes the die temperature the thermal
+    // monitor already polls. Starts null until the first reading; min/max
+    // match the 20-100°C range the sensor is configured for in thermal.cpp.
+    temperature_sensor::config_t temp_sensor_config;
+    temp_sensor_config.temperature_measurement.measured_value = nullable<int16_t>();
+    temp_sensor_config.temperature_measurement.min_measured_value = 2000;
+    temp_sensor_config.temperature_measurement.max_measured_value = 10000;
+
+    endpoint_t *temp_endpoint = temperature_sensor::create(node, &temp_sensor_config, ENDPOINT_FLAG_NONE, nullptr);
+    ABORT_APP_ON_FAILURE(temp_endpoint != nullptr, ESP_LOGE(TAG, "Failed to create temperature_sensor endpoint"));
+
+    temperature_endpoint_id = endpoint::get_id(temp_endpoint);
+    ESP_LOGI(TAG, "Temperature sensor created with endpoint_id %d", temperature_endpoint_id);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_DEVICE_CONFIG_ENABLE_WIFI_STATION
     // Enable secondary network interface

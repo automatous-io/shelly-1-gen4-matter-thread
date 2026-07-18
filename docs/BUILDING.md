@@ -47,7 +47,7 @@ source/
 │   ├── outlet/          # Matter On/Off Plug-in Unit, latching relay, SW kept as a wall toggle (released)
 │   └── light-switch/    # Matter On/Off Light Switch, detached relay + SW input bound to other Matter devices (released)
 └── shelly-1-mini-gen4/
-    └── outlet/          # Matter On/Off Plug-in Unit + Temperature Sensor, latching relay (released)
+    └── outlet/          # Matter On/Off Plug-in Unit, latching relay (released)
 ```
 
 Each variant is a self-contained ESP-IDF project. Build commands run from inside the variant directory. The examples below build the Shelly 1 Gen4 `light` variant; to build a different one, substitute its hardware and variant directories in the `cd` command.
