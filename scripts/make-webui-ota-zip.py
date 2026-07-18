@@ -34,10 +34,8 @@ hardware code. That code is looked up from the variant's hardware directory (see
 HARDWARE table below) and can be overridden with --app-code/--compatible for testing 
 purposes.
 
-Every part in the zip comes from the build; no Shelly binaries are included. Shelly's
-OTA requires a boot part; the zip includes a bootloader with min_version 0.0.0. The
-device reads that as 0.0.0 and keeps its existing bootloader rather than flashing the
-bundled one, so nothing at offset 0x0 is overwritten.
+Every part in the zip comes from the build; no Shelly binaries are included. The zip
+replaces the stock bootloader with the build's own.
 """
 import argparse, datetime, hashlib, json, os, sys, tempfile, zipfile
 
@@ -53,7 +51,11 @@ PLATFORM     = "esp32c6"
 # Kept above any stock version; the device never refuses it as a downgrade. The
 # real firmware version is in the app and the zip filename and not here.
 MANIFEST_VER = "99.0.0"
-BOOT_MIN     = "0.0.0"
+# The stock updater compares the boot part's min_version against its running
+# bootloader (logged as "Boot: cur ..., min ..., update? N") and flashes the
+# bundled bootloader only when min_version is higher. Set above any stock
+# version.
+BOOT_MIN     = "99.0.0"
 # Must match the variant's partitions.csv.
 PT_ADDR  = 0x10000
 NVS_SIZE = 0xC000
@@ -146,6 +148,7 @@ def main():
 
     print(f"Created {os.path.basename(zip_out)} ({os.path.getsize(zip_out) / 1024 / 1024:.1f} MB)")
     print(f"  {variant} v{version}, manifest name={app_code}, version={MANIFEST_VER}")
+    print(f"  boot min_version={BOOT_MIN}: this zip replaces the stock bootloader")
 
 
 if __name__ == "__main__":
