@@ -61,7 +61,7 @@ Matter device types are declared by the firmware at flash time and cannot be cha
 | Opener | On/Off Plug-in Unit + Contact Sensor | Momentary pulse, roughly 500ms. | Garage door openers, gates, doorbells, and other pulse-activated devices. |
 | Light Switch | On/Off Light + On/Off Light Switch | Latching, but the SW terminal is detached from the relay. | Repurposing the wall switch to control other Matter devices through a binding, while the local relay runs independently. |
 
-All four variants are available for the Shelly 1 Gen4. The Shelly 1 Mini Gen4 ships the Outlet variant, with an added temperature sensor endpoint.
+All four variants are available for the Shelly 1 Gen4. The Shelly 1 Mini Gen4 ships the Outlet variant. Every variant on both devices includes a temperature sensor endpoint.
 
 Light and Outlet are electrically identical. Both latch and hold state, and both keep the SW terminal as a physical wall toggle. They differ only in the Matter device type they report, which sets how your smart home app names, displays, and voice-controls the device, as a light or as an outlet. Some apps let you recategorize after pairing. Others fix the icon, label, and automations to the reported type, which cannot change after commissioning. Pick the variant that matches the load you wired, so the controls read the way you expect.
 
@@ -153,7 +153,7 @@ shelly-1-gen4-matter-thread/
     │   ├── outlet/        Matter On/Off Plug-in Unit, latching relay, SW kept as a wall toggle. Released.
     │   └── light-switch/  Matter On/Off Light Switch, detached relay with the SW input bound to other Matter devices. Released.
     └── shelly-1-mini-gen4/
-        └── outlet/        Matter On/Off Plug-in Unit + Temperature Sensor, latching relay. Released.
+        └── outlet/        Matter On/Off Plug-in Unit, latching relay. Released.
 ```
 
 Each variant directory under `source/` is a self-contained ESP-IDF project. See [Building from Source](docs/BUILDING.md) for what each variant does and how to build it.
