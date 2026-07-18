@@ -24,7 +24,8 @@
 // Initialize the thermal monitor.
 //
 // Configures the ESP32-C6 internal temperature sensor and spawns a
-// background task that polls the temperature every 2 seconds. If the
+// background task that polls the temperature every 2 seconds. Readings
+// are published to the Matter Temperature Sensor endpoint. If the
 // board temperature exceeds 75°C sustained for 10 seconds, the thermal
 // monitor will:
 //   1. Drive the relay off (via relay_set(false))
