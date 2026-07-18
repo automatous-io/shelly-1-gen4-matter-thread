@@ -33,6 +33,10 @@ using namespace esp_matter;
 // attribute to update on thermal fault.
 extern uint16_t light_endpoint_id;
 
+// Defined in app_main.cpp. The Temperature Sensor endpoint that publishes
+// the die temperature readings.
+extern uint16_t temperature_endpoint_id;
+
 static const char *TAG = "thermal";
 
 // Trip threshold: sustained 75°C for 10 seconds.
@@ -44,9 +48,9 @@ static const char *TAG = "thermal";
 // Polling interval for the monitor task.
 #define TEMP_POLL_INTERVAL_MS 2000
 
-// Stack size for the monitor task. Small — only does sensor reads and
-// occasional logging.
-#define THERMAL_TASK_STACK_SIZE 2048
+// Stack size for the monitor task. attribute::update() runs the Matter
+// data-model and reporting on this stack; 2048 overflows it.
+#define THERMAL_TASK_STACK_SIZE 4096
 
 // Internal state.
 static temperature_sensor_handle_t temp_sensor = NULL;
@@ -62,6 +66,19 @@ static void thermal_check(void)
     }
 
     ESP_LOGD(TAG, "Board temp: %.1f C", temp);
+
+    // Publish to the Temperature Sensor endpoint in Matter units (0.01°C).
+    // Only on a change of 0.5°C or more, so a steady temperature does not
+    // generate a Thread report every poll. Skip while the endpoint id is
+    // still 0: the first poll runs before the Matter node exists.
+    static int16_t last_reported_centi = INT16_MIN;
+    int16_t centi = (int16_t)(temp * 100.0f);
+    if (temperature_endpoint_id != 0 && abs(centi - last_reported_centi) >= 50) {
+        last_reported_centi = centi;
+        esp_matter_attr_val_t temp_val = esp_matter_nullable_int16(centi);
+        attribute::update(temperature_endpoint_id, TemperatureMeasurement::Id,
+                          TemperatureMeasurement::Attributes::MeasuredValue::Id, &temp_val);
+    }
 
     if (temp > TEMP_TRIP_CELSIUS) {
         // Above threshold. Start timing if we haven't already.
