@@ -190,6 +190,8 @@ Press, blog posts, and mentions of the project.
 - [Shelly Gen 4: Custom-Firmware bringt Unterstützung für Matter over Thread](https://stadt-bremerhaven.de/shelly-gen-4-custom-firmware-bringt-unterstuetzung-fuer-matter-over-thread/) — Caschys Blog, May 2026 (German)
 - [Community discussion on r/homeassistant](https://www.reddit.com/r/homeassistant/comments/1t8bv8q/made_an_open_source_matter_over_thread_firmware/) — Reddit, May 2026
 - [Jonathan Hui of the Thread Group / CSA highlights the project](https://www.linkedin.com/posts/jonathanhui_from-the-homeassistant-community-on-reddit-share-7459779233565925377-KUMe/) — LinkedIn, May 2026
+- [Tomas McGuinness discusses Matter Bindings via the light-switch firmware](https://youtu.be/4279At06XYE) — YouTube, July 2026
+- [Community discussion on r/ShellyUSA, mod credits project with generating a dramatic increase of Thread interest and feature requests to Shelly](https://www.reddit.com/r/ShellyUSA/s/HWfyJbMkMY) — Reddit, July 2026
 
 ---
 
