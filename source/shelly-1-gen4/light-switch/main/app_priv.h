@@ -33,6 +33,12 @@
 // Default attribute values used during initialization
 #define DEFAULT_POWER false
 
+// SWITCH_ON_IS_HIGH: maps the GPIO10 level to the reported StateValue.
+// SW closed reads HIGH; 0 reports a closed toggle as "open" on purpose,
+// since HA renders contact sensors inverted (entity on = StateValue false).
+// Confirmed on hardware: bridged SW shows ON in HA at 0.
+#define SWITCH_ON_IS_HIGH 0
+
 typedef void *app_driver_handle_t;
 
 // Initialize the driver

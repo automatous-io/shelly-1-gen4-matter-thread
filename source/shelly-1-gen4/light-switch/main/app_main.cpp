@@ -62,6 +62,7 @@ static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
 uint16_t switch_endpoint_id = 0;
 uint16_t temperature_endpoint_id = 0;
+uint16_t contact_sensor_endpoint_id = 0;
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
@@ -297,6 +298,18 @@ extern "C" void app_main()
     temperature_endpoint_id = endpoint::get_id(temp_endpoint);
     ESP_LOGI(TAG, "Temperature sensor created with endpoint_id %d", temperature_endpoint_id);
 
+    // Contact Sensor mirrors the wall toggle position on GPIO10, which
+    // detached mode otherwise hides from controllers. Created last so
+    // existing endpoint ids stay stable for devices upgrading over OTA.
+    // Seed the initial state from the current position.
+    contact_sensor::config_t contact_config;
+    contact_config.boolean_state.state_value = switch_input_read_state();
+    endpoint_t *contact_endpoint = contact_sensor::create(node, &contact_config, ENDPOINT_FLAG_NONE, nullptr);
+    ABORT_APP_ON_FAILURE(contact_endpoint != nullptr, ESP_LOGE(TAG, "Failed to create contact_sensor endpoint"));
+
+    contact_sensor_endpoint_id = endpoint::get_id(contact_endpoint);
+    ESP_LOGI(TAG, "Contact sensor created with endpoint_id %d", contact_sensor_endpoint_id);
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD && CHIP_DEVICE_CONFIG_ENABLE_WIFI_STATION
     // Enable secondary network interface
     secondary_network_interface::config_t secondary_network_interface_config;
@@ -331,6 +344,10 @@ extern "C" void app_main()
 
     // Starting driver with default values
     app_driver_light_set_defaults(light_endpoint_id);
+
+    // Publish the actual switch position; the code-driven Boolean State
+    // cluster needs an explicit setter call (the config seed doesn't reach it).
+    switch_input_report();
 
 #if CONFIG_ENABLE_ENCRYPTED_OTA
     err = esp_matter_ota_requestor_encrypted_init(s_decryption_key, s_decryption_key_len);

@@ -21,12 +21,18 @@
 
 #include "switch_input.h"
 
+#include <app_priv.h>
+
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/queue.h>
+
+// BooleanState StateValue is read-only / internally managed, so it must be
+// updated via the cluster setter, not attribute::update().
+#include <clusters/boolean_state/integration.h>
 
 using namespace chip::app::Clusters;
 using namespace esp_matter;
@@ -36,6 +42,11 @@ static const char *TAG = "switch_input";
 // Defined in app_main.cpp. Used to know which Matter endpoint's OnOff
 // attribute to toggle when the switch input fires.
 extern uint16_t switch_endpoint_id;
+
+// Defined in app_main.cpp. The endpoint whose Boolean State StateValue
+// attribute mirrors the wall toggle position. Zero until the endpoint is
+// created; edges before then still send the toggle but skip the report.
+extern uint16_t contact_sensor_endpoint_id;
 
 // Shelly 1 Gen4 wall switch input.
 //
@@ -59,6 +70,34 @@ static void IRAM_ATTR switch_input_isr(void *arg)
     xQueueSendFromISR(switch_evt_queue, &gpio_num, nullptr);
 }
 
+bool switch_input_read_state(void)
+{
+    // Map the raw GPIO level to the Matter StateValue (true = toggle on).
+    int level = gpio_get_level(SWITCH_INPUT_GPIO);
+    return (level == (SWITCH_ON_IS_HIGH ? 1 : 0));
+}
+
+void switch_input_report(void)
+{
+    // The endpoint may not exist yet during early boot edges.
+    if (contact_sensor_endpoint_id == 0) {
+        return;
+    }
+
+    bool state_value = switch_input_read_state();
+
+    // Runs outside the Matter task, so take the CHIP stack lock.
+    // SetStateValue() updates the attribute and emits the report.
+    esp_matter::lock::ScopedChipStackLock lock(portMAX_DELAY);
+    auto *cluster = chip::app::Clusters::BooleanState::FindClusterOnEndpoint(contact_sensor_endpoint_id);
+    if (cluster == nullptr) {
+        ESP_LOGE(TAG, "BooleanState cluster not found on endpoint %u", contact_sensor_endpoint_id);
+        return;
+    }
+    cluster->SetStateValue(state_value);
+    ESP_LOGI(TAG, "Switch position updated: %s", state_value ? "ON" : "OFF");
+}
+
 static void switch_input_task(void *arg)
 {
     while (true) {
@@ -76,10 +115,16 @@ static void switch_input_task(void *arg)
             req_handle.command_path.mClusterId = OnOff::Id;
             req_handle.command_path.mCommandId = OnOff::Commands::Toggle::Id;
 
-            lock::ScopedChipStackLock lock(portMAX_DELAY);
-            client::cluster_update(switch_endpoint_id, &req_handle);
+            // Scoped so the stack lock releases before the report takes
+            // its own below.
+            {
+                lock::ScopedChipStackLock lock(portMAX_DELAY);
+                client::cluster_update(switch_endpoint_id, &req_handle);
+            }
 
             ESP_LOGI(TAG, "Switch input toggled");
+
+            switch_input_report();
         }
     }
 }
