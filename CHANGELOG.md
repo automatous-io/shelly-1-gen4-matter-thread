@@ -114,6 +114,17 @@ First release of the Outlet variant. Matter On/Off Plug-in Unit with latching re
 
 ## Shelly 1 Gen4 Light Switch
 
+### [2.2.0] - 2026-07-29
+
+Wall switch state exposure. The toggle position on the SW terminal is now visible to controllers as a contact sensor.
+
+#### Added
+- Wall switch state on the SW input, exposed as a Matter Contact Sensor endpoint. The sensor tracks the physical toggle only; commands to bound devices have no effect on the physical wall switch state. In Home Assistant it appears as a binary sensor that is on while the toggle is on, labeled "Open" under the default 'Show as' door; changing to power renders it as On and Off. Apple Home shows Open and Closed with a few other options. Requested by @MetsGER84.
+- Compile-time constant `SWITCH_ON_IS_HIGH` (default 0) in `main/app_priv.h`, mapping the SW input level to the reported state.
+
+#### Changed
+- `CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT` raised from 4 to 5 for the new endpoint. The contact sensor is created after the existing endpoints; endpoint ids stay stable and a Matter OTA from 2.1.0 adds the sensor without re-pairing.
+
 ### [1.0.0] - 2026-06-20
 
 First release of the Light Switch variant, contributed by [Tomas McGuinness](https://github.com/tomasmcguinness). Derived from the Light 1.2.0 codebase, it adds detached-relay support so the SW terminal controls other Matter devices instead of the local relay.
