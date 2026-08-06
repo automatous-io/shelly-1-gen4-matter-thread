@@ -19,7 +19,7 @@ This guide covers building the Automatous firmware from source. If you just want
 
 ## Requirements
 
-- **ESP-IDF v5.5.2**, Espressif's IoT development framework.
+- **ESP-IDF v5.5.5**, Espressif's IoT development framework.
 - **ESP-Matter**, Espressif's Matter SDK, installed as a cloned repository. The build reads it through the `ESP_MATTER_PATH` environment variable, which esp-matter's `export.sh` sets. It is not pulled from the component registry. Check it out to the pinned commit below rather than building against `main`.
 - **macOS or Linux**. The Windows build path is not currently tested.
 
@@ -27,9 +27,9 @@ These binaries are built against pinned toolchain versions. Newer versions may b
 
 | Component | Version |
 |---|---|
-| ESP-IDF | `v5.5.2` |
-| ESP-Matter | `2cb668c95de4f24786d20b7cb03c171d6e27b79e` |
-| connectedhomeip (esp-matter submodule) | `8f943388af4d12dc5c484eae21b22723e03c3616` |
+| ESP-IDF | `v5.5.5` |
+| ESP-Matter | `36c2634e99c884830897e2b9501e2d9a6c9d60fd` |
+| connectedhomeip (esp-matter submodule) | `d46cc8c2886cbefc338544bdb2e2f8128f3e9970` |
 
 connectedhomeip is a submodule of esp-matter, so checking out the esp-matter commit and updating its submodules pulls the matching connectedhomeip commit automatically. It lives in Espressif's connectedhomeip fork, not the upstream CSA repository.
 
@@ -58,7 +58,7 @@ Each variant is a self-contained ESP-IDF project. Build commands run from inside
 
 If you don't already have ESP-IDF and ESP-Matter installed, follow Espressif's official setup guides first:
 
-- [ESP-IDF Get Started](https://docs.espressif.com/projects/esp-idf/en/v5.5.2/esp32c6/get-started/index.html)
+- [ESP-IDF Get Started](https://docs.espressif.com/projects/esp-idf/en/v5.5.5/esp32c6/get-started/index.html)
 - [ESP-Matter Get Started](https://docs.espressif.com/projects/esp-matter/en/latest/esp32c6/developing.html)
 
 This project assumes you have both SDKs installed. The build step below sets the ESP32-C6 target.
@@ -67,7 +67,7 @@ After cloning esp-matter, check it out to the pinned commit and sync its submodu
 
 ```bash
 cd ~/esp/esp-matter
-git checkout 2cb668c95de4f24786d20b7cb03c171d6e27b79e
+git checkout 36c2634e99c884830897e2b9501e2d9a6c9d60fd
 git submodule update --init --recursive
 ```
 
