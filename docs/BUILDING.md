@@ -71,6 +71,16 @@ git checkout 36c2634e99c884830897e2b9501e2d9a6c9d60fd
 git submodule update --init --recursive
 ```
 
+connectedhomeip's GN build needs a generated `build_overrides/pigweed_environment.gni`, which is not checked into the repo. Run its environment bootstrap once per esp-matter checkout to create it:
+
+```bash
+cd connectedhomeip/connectedhomeip
+scripts/bootstrap.sh
+cd ../..
+```
+
+Skipping this step fails the build at the `chip_gn` configure step with `Unable to load ".../build_overrides/pigweed_environment.gni"`.
+
 ---
 
 ## Build
