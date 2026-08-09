@@ -7,7 +7,6 @@ read-partition-table.bin
 
 # Managed components — downloaded automatically, not committed
 managed_components/
-dependencies.lock
 
 # macOS
 .DS_Store
