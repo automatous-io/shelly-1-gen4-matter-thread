@@ -48,6 +48,8 @@ For a suspected security vulnerability, an attacker-reachable flaw or a credenti
 
 If your device won't commission, won't boot, or behaves unexpectedly after flashing, serial logs are usually the fastest path to a diagnosis.
 
+If you built the firmware yourself rather than using a release, say so, and build in the dev container before reporting. A local ESP-IDF or esp-matter install is the usual reason a problem can't be reproduced here.
+
 ---
 
 ## Firmware filename convention
@@ -73,6 +75,7 @@ Before opening a PR for anything beyond a typo or a small bug fix, open an issue
 When the PR is ready:
 
 - Keep it focused on one change. Multiple unrelated changes should be separate PRs.
+- Build and test in the dev container. It pins the toolchain and the components the build pulls, so your build matches everyone else's. See [Building from Source](BUILDING.md).
 - Match the existing code style and naming conventions.
 - Include a brief test plan in the PR description: what hardware scenarios did you verify, and what was the outcome.
 - Update relevant docs in the same PR if behavior changes.

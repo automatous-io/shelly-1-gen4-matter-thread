@@ -7,14 +7,15 @@ read-partition-table.bin
 
 # Managed components — downloaded automatically, not committed
 managed_components/
-dependencies.lock
 
 # macOS
 .DS_Store
 **/.DS_Store
 
-# VSCode
-.vscode/
+# VSCode — personal settings stay local, but the extension recommendation
+# that bootstraps the dev container is shared.
+.vscode/*
+!.vscode/extensions.json
 
 # Python cache
 __pycache__/
