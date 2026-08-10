@@ -109,6 +109,7 @@ Matter over Thread devices need a path onto a Thread network to commission and r
 |---|---|---|
 | Apple HomePod mini | Yes | Yes |
 | Apple HomePod (2nd gen) | Yes | Yes |
+| Apple TV 4K (2nd gen A2169) | Yes | Yes |
 | Apple TV 4K (3rd gen) | Yes | Untested |
 | iPhone 15 Pro and newer | Yes | Yes |
 | Google Nest Hub (2nd gen) | Yes | Untested |
