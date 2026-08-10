@@ -1,0 +1,60 @@
+{
+  // Copyright 2026 AUTOMATOUS.IO
+  //
+  // Licensed under the Apache License, Version 2.0 (the "License");
+  // you may not use this file except in compliance with the License.
+  // You may obtain a copy of the License at
+  //
+  //     http://www.apache.org/licenses/LICENSE-2.0
+  //
+  // Unless required by applicable law or agreed to in writing, software
+  // distributed under the License is distributed on an "AS IS" BASIS,
+  // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  // See the License for the specific language governing permissions and
+  // limitations under the License.
+
+  "name": "Shelly 1 Gen4 — release toolchain (ESP-IDF v5.5.2 · esp-matter 2cb668c9)",
+  "build": { "dockerfile": "Dockerfile" },
+
+  "workspaceFolder": "/workspaces/shelly-1-gen4-matter-thread",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/shelly-1-gen4-matter-thread,type=bind",
+
+  "containerEnv": {
+    "SDKCONFIG_DEFAULTS": "sdkconfig.defaults.c6_thread_shelly",
+    "NINJA_JOBS": "8"
+  },
+
+  "mounts": [
+    "source=shelly-gen4-ccache-release,target=/root/.cache/ccache,type=volume"
+  ],
+
+  "remoteUser": "root",
+
+  // To flash from inside the container, append your serial device and rebuild:
+  //   "runArgs": ["--add-host=host.docker.internal:host-gateway", "--device=/dev/ttyUSB0"],
+  // Linux + Docker Engine only, and the node must exist when the container is
+  // created or creation fails outright. Do not commit that change.
+  // See docs/BUILDING.md#flash-your-build
+  "runArgs": ["--add-host=host.docker.internal:host-gateway"],
+
+  "customizations": {
+    "vscode": {
+      // Deliberately omitted: ms-vscode.cmake-tools, which would try to
+      // configure the project itself and conflict with idf.py's build dir.
+      // twxs.cmake provides syntax highlighting only, which is what we want.
+      "extensions": [
+        "ms-vscode.cpptools",
+        "twxs.cmake",
+        "ms-python.python"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "C_Cpp.default.compileCommands": "${workspaceFolder}/source/shelly-1-gen4/light/build/compile_commands.json",
+        "files.associations": { "*.defaults": "properties" },
+        "files.watcherExclude": { "**/build/**": true },
+        "search.exclude": { "**/build/**": true },
+        "python.defaultInterpreterPath": "/opt/esp/python_env/idf5.5_py3.12_env/bin/python"
+      }
+    }
+  }
+}
