@@ -202,6 +202,7 @@ Other open source, local-first, Matter over Thread projects from Automatous.
 
 | Project | What it is |
 |---|---|
+| [XIAO Soil Moisture Sensor](https://github.com/automatous-io/xiao-soil-moisture-sensor-matter-thread) | Open source Matter over Thread firmware for the $12 Seeed Studio XIAO Soil Moisture Sensor. A Matter 1.5 soil sensor, native in Home Assistant. No ESPHome, no cloud, no WiFi. |
 | [T1N Smart Lock](https://github.com/automatous-io/t1n-smart-lock) | Open source Matter over Thread smart lock that integrates with the factory central locking on a 2005 Dodge Sprinter 2500 (T1N chassis). Observation based, OEM respectful. |
 
 ---
