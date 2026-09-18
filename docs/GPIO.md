@@ -13,6 +13,7 @@ Pins listed as confirmed were verified on real hardware. Pins listed as `GPIOnn`
 - [Shelly 1 Gen4](#shelly-1-gen4)
 - [Shelly 1PM Gen4](#shelly-1pm-gen4)
 - [Shelly 1 Mini Gen4](#shelly-1-mini-gen4)
+- [Shelly 2PM Gen4](#shelly-2pm-gen4)
 
 ## Shelly 1 Gen4
 
@@ -54,6 +55,23 @@ Verified: July 2026
 | Switch input | GPIO12 |
 | Button (onboard) | GPIO22 |
 | Status LED | GPIO5 |
+| NTC | GPIO4 |
+
+## Shelly 2PM Gen4
+
+Hardware Revision: v0.1.2
+
+Verified: September 2026
+
+| Function | GPIO |
+|---|---|
+| Relay 1 (O1) | GPIO5 |
+| Relay 2 (O2) | GPIO3 |
+| Switch input 1 (S1) | GPIO11 |
+| Switch input 2 (S2) | GPIO10 |
+| Button (onboard) | GPIO12 |
+| Status LED | GPIO18 |
+| Power meter (ADE7953) | SDA GPIO6, SCL GPIO7, IRQ GPIO1, I2C |
 | NTC | GPIO4 |
 
 ## Related documentation
