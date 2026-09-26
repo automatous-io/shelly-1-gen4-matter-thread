@@ -146,6 +146,19 @@ First release for the Shelly 1 Mini Gen4, the first supported device beyond the 
 - Three-endpoint Matter composition: an On/Off Plug-in Unit for the relay, a Temperature Sensor, and the Root Node.
 - Distinct Matter Product ID (`0x8005`), so a Matter OTA image can only target this device and variant.
 
+## Shelly 1 Mini Gen4 Light Switch
+
+### [1.0.0] - 2026-09-26
+
+The Light Switch variant on the Shelly 1 Mini Gen4, at parity with the 1 Gen4 Light Switch 2.2.0: detached relay, wall switch state as a contact sensor, and a temperature sensor. Requested by @zididadaday in #37.
+
+#### Added
+- Detached relay on the Mini's GPIO map, confirmed on hardware: relay GPIO10, button GPIO22, wall switch input GPIO12, status LED GPIO5. The SW terminal sends a Matter OnOff Toggle through the On/Off Light Switch endpoint's binding and does not drive the local relay. The relay is controlled by app and the onboard button.
+- Wall switch state on the SW input, exposed as a Matter Contact Sensor endpoint. `SWITCH_ON_IS_HIGH` stays at 0; the GPIO12 level maps the same way as GPIO10 on the 1 Gen4, confirmed on hardware, and the state is read at boot.
+- Temperature sensor endpoint reporting the ESP32-C6 die temperature, with the shared 75°C thermal cutoff.
+- Five-endpoint Matter composition: an On/Off Light for the relay, an On/Off Light Switch for the SW input, a Temperature Sensor, a Contact Sensor, and the Root Node.
+- Distinct Matter Product ID (`0x8006`); Matter OTA image can only target this device and variant.
+
 ---
 
 Full release notes, including tested scenarios, are on the [GitHub releases page](../../releases).

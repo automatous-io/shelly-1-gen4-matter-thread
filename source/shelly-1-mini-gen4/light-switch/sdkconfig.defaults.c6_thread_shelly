@@ -1,0 +1,75 @@
+CONFIG_IDF_TARGET="esp32c6"
+
+# libsodium
+CONFIG_LIBSODIUM_USE_MBEDTLS_SHA=y
+
+# NIMBLE
+CONFIG_BT_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+CONFIG_BT_NIMBLE_EXT_ADV=n
+CONFIG_BT_NIMBLE_HCI_EVT_BUF_SIZE=70
+CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=n
+
+# Enable OpenThread
+CONFIG_OPENTHREAD_ENABLED=y
+CONFIG_OPENTHREAD_SRP_CLIENT=y
+CONFIG_OPENTHREAD_DNS_CLIENT=y
+CONFIG_OPENTHREAD_LOG_LEVEL_DYNAMIC=n
+CONFIG_OPENTHREAD_LOG_LEVEL_NOTE=y
+CONFIG_OPENTHREAD_CLI=n
+
+# Thread device type — Full Thread Device (FTD), Router-eligible
+# This firmware intentionally runs as FTD to actively route Thread traffic
+# for other devices on the mesh, trading Sleepy End Device (SED) power
+# savings for mesh extension benefit. See README Power Consumption section.
+CONFIG_OPENTHREAD_FTD=y
+
+# Disable lwip ipv6 autoconfig
+CONFIG_LWIP_IPV6_AUTOCONFIG=n
+
+# Use a custom partition table
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_OFFSET=0x10000
+
+# LwIP config for OpenThread
+CONFIG_LWIP_IPV6_NUM_ADDRESSES=8
+CONFIG_LWIP_MULTICAST_PING=y
+
+# MDNS platform
+CONFIG_USE_MINIMAL_MDNS=n
+CONFIG_ENABLE_EXTENDED_DISCOVERY=y
+
+# Enable OTA Requestor
+CONFIG_ENABLE_OTA_REQUESTOR=y
+
+# Disable STA for ESP32C6
+CONFIG_ENABLE_WIFI_STATION=n
+
+# Button
+CONFIG_BUTTON_PERIOD_TIME_MS=20
+CONFIG_BUTTON_LONG_PRESS_TIME_MS=10000
+
+# Enable chip shell
+CONFIG_ENABLE_CHIP_SHELL=y
+
+# Shelly 1 Mini Gen4 Settings
+
+# Endpoint count
+CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=5
+
+# Flash
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="8MB"
+
+# Hardware version (numeric; matches Shelly PCB rev v0.1.2)
+# String "v0.1.2" set via CHIPProjectConfig.h
+CONFIG_DEFAULT_DEVICE_HARDWARE_VERSION=0
+
+# Hardware version (numeric; matches Shelly PCB rev v0.1.2)
+# String "v0.1.2" set via CHIPProjectConfig.h
+CONFIG_CHIP_PROJECT_CONFIG="main/CHIPProjectConfig.h"
+
+# Device Identification Options
+# Set a unique variant PID for OTA
+CONFIG_DEVICE_PRODUCT_ID=0x8006

@@ -54,7 +54,7 @@ The fastest way to install this firmware is the Shelly web UI, over your network
 
 > ⚠️ **The web UI flash is effectively one-way.** The web UI cannot read the chip in order to make the full-chip backup that restores the device to a fully functional factory state, including the keys that enable Shelly Cloud and official OTA. This path also writes a permanent marker to the chip's eFuse. If you want the option to return to stock, [back up over UART](#2-back-up-the-original-shelly-firmware) first, or accept that the change is permanent. See [Reversibility](REVERSIBILITY.md).
 
-> **The device must be in its normal WiFi mode**, reachable on your WiFi network, and running recent stock firmware (verified on both 1.7.0 and 1.7.5).
+> **The device must be in its normal WiFi mode**, reachable on your WiFi network, and running recent stock firmware (verified on 1.7.0, 1.7.5, and 2.0.0).
 
 1. Download the web UI package for your device and variant, `automatous-io-{hardware}-{variant}-vX.Y.Z-ota.zip`, from the [latest release](../../../releases/latest). This is the `.zip`, not the `.bin`.
 2. Open the Shelly's web UI in a browser at its IP address on your network.
