@@ -13,7 +13,7 @@
   // See the License for the specific language governing permissions and
   // limitations under the License.
 
-  "name": "Shelly 1 Gen4 — release toolchain (ESP-IDF v5.5.2 · esp-matter 2cb668c9)",
+  "name": "Shelly 1 Gen4 — release toolchain (ESP-IDF v5.5.5 · esp-matter release/v1.6 c660712)",
   "build": { "dockerfile": "Dockerfile" },
 
   "workspaceFolder": "/workspaces/shelly-1-gen4-matter-thread",

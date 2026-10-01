@@ -31,13 +31,13 @@ The image is built from `.devcontainer/Dockerfile` and contains:
 
 | Component | Version |
 |---|---|
-| ESP-IDF | `v5.5.2` |
-| ESP-Matter | `2cb668c95de4f24786d20b7cb03c171d6e27b79e` |
-| connectedhomeip (esp-matter submodule) | `8f943388af4d12dc5c484eae21b22723e03c3616` |
+| ESP-IDF | `v5.5.5` |
+| ESP-Matter | `c6607128fedc83cb65d6324c14d3e4d7a4d6bd0a` (`release/v1.6`) |
+| connectedhomeip (esp-matter submodule) | `93abd8e6891bb578ea63254fb29d099936f345c8` |
 
-These are the versions the released binaries were produced with. Newer versions may build, but they are not what shipped.
+These are the versions the next release is built with. Releases up to and including 2.1.0 were built with ESP-IDF `v5.5.2` and esp-matter `2cb668c95de4f24786d20b7cb03c171d6e27b79e` (connectedhomeip `8f943388af4d12dc5c484eae21b22723e03c3616`); to reproduce one of those, check out its tag and use the Dockerfile from that tag.
 
-ESP-Matter is used as a cloned repository rather than a component from the registry, and the build reads it through `ESP_MATTER_PATH`. The pinned esp-matter commit is on `main`, not a release branch, which is why no published `espressif/esp-matter` image matches it and the image is built here instead.
+ESP-Matter is used as a cloned repository rather than a component from the registry, and the build reads it through `ESP_MATTER_PATH`. The pinned esp-matter commit is on the `release/v1.6` branch (Matter 1.6), pinned by SHA rather than by branch name so the image does not change when the branch moves. No published `espressif/esp-matter` image matches it, so the image is built here instead.
 
 connectedhomeip is a submodule of esp-matter, so checking out the esp-matter commit and updating its submodules pulls the matching connectedhomeip commit automatically — it is not pinned separately. It lives in Espressif's connectedhomeip fork, not the upstream CSA repository, so those commits will not resolve there.
 
@@ -85,13 +85,13 @@ Open that folder and run **Dev Containers: Reopen in Container** from the Comman
 If you are not using VS Code, build the image and start a container directly:
 
 ```bash
-docker build -t automatous-io/shelly-gen4-builder:idf-v5.5.2-matter-2cb668c9 .devcontainer
+docker build -t automatous-io/shelly-gen4-builder:idf-v5.5.5-matter-c660712 .devcontainer
 
 docker run --rm -it \
   -v "$PWD":/workspaces/shelly-1-gen4-matter-thread \
   -w /workspaces/shelly-1-gen4-matter-thread \
   -e SDKCONFIG_DEFAULTS=sdkconfig.defaults.c6_thread_shelly \
-  automatous-io/shelly-gen4-builder:idf-v5.5.2-matter-2cb668c9 bash
+  automatous-io/shelly-gen4-builder:idf-v5.5.5-matter-c660712 bash
 ```
 
 The first build takes roughly 20–25 minutes and produces an image of about 18 GB. It compiles the Matter SDK's build environment. After that it starts in seconds, and it only rebuilds if the Dockerfile changes.
@@ -99,9 +99,9 @@ The first build takes roughly 20–25 minutes and produces an image of about 18 
 Both SDKs are exported in every shell in the container, and `SDKCONFIG_DEFAULTS` is already set. Note that esp-matter's CMake overrides that environment variable during a build, so [Build](#build) still passes the defaults file with `-D`. To confirm which revisions an image holds:
 
 ```bash
-cat /opt/esp/esp-idf-version.txt          # v5.5.2
-cat /opt/esp/esp-matter-commit.txt        # 2cb668c9...
-cat /opt/esp/connectedhomeip-commit.txt   # 8f943388...
+cat /opt/esp/esp-idf-version.txt          # v5.5.5
+cat /opt/esp/esp-matter-commit.txt        # c6607128...
+cat /opt/esp/connectedhomeip-commit.txt   # 93abd8e6...
 ```
 
 ---

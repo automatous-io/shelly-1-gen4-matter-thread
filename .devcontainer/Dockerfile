@@ -15,18 +15,20 @@
 #
 
 #
-#   docker build -t automatous-io/shelly-gen4-builder:idf-v5.5.2-matter-2cb668c9 \
+#   docker build -t automatous-io/shelly-gen4-builder:idf-v5.5.5-matter-c660712 \
 #       .devcontainer
 #
-# No published espressif/esp-matter tag matches this pin: 2cb668c9 is a commit
-# on esp-matter's main branch, and every published tag tracks a release branch.
+# No published espressif/esp-matter tag matches this pin: c660712 is a commit on
+# esp-matter's release/v1.6 branch (Matter 1.6), pinned by SHA so the branch
+# moving does not change the image. ESP-IDF v5.5.5 and connectedhomeip 93abd8e68
+# are what that branch's README recommends.
 FROM ubuntu:24.04@sha256:561618e2c15bf2397621dd04f96926663a3b5616c189cf7e38db7e82f5c538ea
 
-ARG IDF_CHECKOUT_REF=v5.5.2
+ARG IDF_CHECKOUT_REF=v5.5.5
 ARG IDF_CLONE_URL=https://github.com/espressif/esp-idf.git
 ARG IDF_INSTALL_TARGETS=esp32c6
 
-ARG ESP_MATTER_REF=2cb668c95de4f24786d20b7cb03c171d6e27b79e
+ARG ESP_MATTER_REF=c6607128fedc83cb65d6324c14d3e4d7a4d6bd0a
 ARG ESP_MATTER_CLONE_URL=https://github.com/espressif/esp-matter.git
 
 ENV DEBIAN_FRONTEND=noninteractive
