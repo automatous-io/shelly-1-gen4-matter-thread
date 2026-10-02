@@ -39,6 +39,7 @@
 #include <thermal.h>
 #include <switch_input.h>
 #include <relay.h>
+#include <mac_serial_provider.h>
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -335,6 +336,9 @@ extern "C" void app_main()
     static_cast<ESP32FactoryDataProvider *>(dac_provider)->SetCertificationDeclaration(cdSpan);
 #endif
 #endif // CONFIG_ENABLE_SET_CERT_DECLARATION_API
+
+    // SerialNumber from the chip's MAC address
+    mac_serial_provider_register();
 
     // Matter start
     err = esp_matter::start(app_event_cb);
