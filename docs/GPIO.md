@@ -99,6 +99,7 @@ Verified: September 2026
 - [Commissioning](COMMISSIONING.md) — pairing the device and reading the status LED
 - [Updating](UPDATING.md) — keeping a device current after flashing
 - [Building from Source](BUILDING.md) — compiling the firmware yourself
+- [Stock Flash Partitions](PARTITIONS.md) — stock flash layout and the factory `shelly` partition
 - [Certification](CERTIFICATION.md) — uncertified status and test credentials
 - [Roadmap](ROADMAP.md) — current known limitations and planned work
 - [Contributing](CONTRIBUTING.md) — reporting bugs and the firmware filename convention

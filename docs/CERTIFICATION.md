@@ -78,6 +78,7 @@ This project is not affiliated with, endorsed by, or sponsored by any of these o
 - [Power Consumption](POWER.md) — measured draw and the Thread Router design choice
 - [Building from Source](BUILDING.md) — compiling the firmware yourself
 - [GPIO Map](GPIO.md) — ESP-Shelly-C68F pin assignments for Gen4 devices
+- [Stock Flash Partitions](PARTITIONS.md) — stock flash layout and the factory `shelly` partition
 - [Roadmap](ROADMAP.md) — current known limitations and planned work
 - [Contributing](CONTRIBUTING.md) — reporting bugs and the firmware filename convention
 - [Contributors](CONTRIBUTORS.md) — people who have helped move the project forward

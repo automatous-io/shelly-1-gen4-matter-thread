@@ -111,6 +111,7 @@ Be straightforward, technical, and direct. Disagreement is fine; hostility is no
 - [Power Consumption](POWER.md) — measured draw and the Thread Router design choice
 - [Building from Source](BUILDING.md) — compiling the firmware yourself
 - [GPIO Map](GPIO.md) — ESP-Shelly-C68F pin assignments for Gen4 devices
+- [Stock Flash Partitions](PARTITIONS.md) — stock flash layout and the factory `shelly` partition
 - [Certification](CERTIFICATION.md) — uncertified status and test credentials
 - [Roadmap](ROADMAP.md) — current known limitations and planned work
 - [Contributors](CONTRIBUTORS.md) — people who have helped move the project forward

@@ -53,6 +53,7 @@ For an AC powered device like the Shelly installed at home, the savings of Sleep
 - [Updating](UPDATING.md) — keeping a device current after flashing
 - [Building from Source](BUILDING.md) — compiling the firmware yourself
 - [GPIO Map](GPIO.md) — ESP-Shelly-C68F pin assignments for Gen4 devices
+- [Stock Flash Partitions](PARTITIONS.md) — stock flash layout and the factory `shelly` partition
 - [Certification](CERTIFICATION.md) — uncertified status and test credentials
 - [Roadmap](ROADMAP.md) — current known limitations and planned work
 - [Contributing](CONTRIBUTING.md) — reporting bugs and the firmware filename convention

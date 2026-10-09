@@ -7,7 +7,7 @@
 [![Stars](https://img.shields.io/github/stars/automatous-io/shelly-1-gen4-matter-thread?style=social)](../../stargazers)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/automatous.io)
 
-> **⚠️ Disclaimer.** Installing this firmware voids your Shelly warranty, and Shelly cannot provide technical support for a device running third-party code. It removes the factory keys that enable Shelly Cloud and official OTA updates. Treat flashing as one-way unless you keep the full-chip backup you make before flashing. Incorrect flashing can brick your device, so always back up your original firmware before proceeding if reversibility is important to you. You assume all responsibility for any damage, data loss, or device failure. This project is not affiliated with Shelly, Allterco Robotics, CSA, or Espressif Systems. See [Warranty, Factory Keys, and Reversibility](docs/REVERSIBILITY.md).
+> **⚠️ Disclaimer.** Installing this firmware voids your Shelly warranty, and Shelly cannot provide technical support for a device running third-party code. It takes away the factory keys that enable Shelly Cloud and official OTA updates, or at least the stock firmware that uses them. Treat flashing as one-way unless you keep the full-chip backup you make before flashing. Incorrect flashing can brick your device, so always back up your original firmware before proceeding if reversibility is important to you. You assume all responsibility for any damage, data loss, or device failure. This project is not affiliated with Shelly, Allterco Robotics, CSA, or Espressif Systems. See [Warranty, Factory Keys, and Reversibility](docs/REVERSIBILITY.md).
 
 The first third-party open source Matter over Thread firmware for Shelly Gen4 devices. It works natively with Apple Home, Google Home, Alexa, and Home Assistant. No Shelly app, no cloud, no WiFi. The Gen4 line's ESP-Shelly-C68F (ESP32-C6) has an 802.15.4 radio that stock firmware uses for Zigbee. Stock firmware also supports Matter over WiFi. This firmware reconfigures the 802.15.4 radio to run Thread, which unlocks Matter over Thread.
 
@@ -130,6 +130,7 @@ Most of it is in [`docs/`](docs/), with build [`scripts/`](scripts/), the change
 - [Power Consumption](docs/POWER.md) — measured draw and the Thread Router design choice
 - [Building from Source](docs/BUILDING.md) — compiling the firmware yourself
 - [GPIO Map](docs/GPIO.md) — ESP-Shelly-C68F pin assignments for Gen4 devices
+- [Stock Flash Partitions](docs/PARTITIONS.md) — stock flash layout and the factory `shelly` partition
 - [Certification](docs/CERTIFICATION.md) — uncertified status and test credentials
 - [Roadmap](docs/ROADMAP.md) — current known limitations and planned work
 - [Contributing](docs/CONTRIBUTING.md) — reporting bugs and the firmware filename convention
@@ -146,7 +147,7 @@ shelly-1-gen4-matter-thread/
 ├── README.md          This file.
 ├── LICENSE            Apache 2.0.
 ├── docs/              Documentation and the images it references.
-├── scripts/           Build scripts that package the release artifacts.
+├── scripts/           Scripts that package the release artifacts, and other utilities.
 └── source/
     ├── shelly-1-gen4/
     │   ├── light/         Matter On/Off Light, latching relay. Released.

@@ -22,7 +22,7 @@ This page explains what installing third-party firmware does to a Shelly Gen4 de
 
 ## What flashing changes
 
-Installing this firmware replaces the stock Shelly firmware, and that has consequences beyond the new features. It voids your warranty, and Shelly cannot provide technical support for a device running third-party code. It also removes the factory keys. Stock firmware uses factory-provisioned keys to reach Shelly Cloud and to receive official OTA updates; once the stock firmware is overwritten those services are unavailable until the original firmware is restored.
+Installing this firmware replaces the stock Shelly firmware, and that has consequences beyond the new features. It voids your warranty, and Shelly cannot provide technical support for a device running third-party code. It also takes away the factory keys, or at least the stock firmware that uses them. Stock firmware uses factory-provisioned keys to reach Shelly Cloud and to receive official OTA updates; once the stock firmware is overwritten those services are unavailable until the original firmware is restored.
 
 Installing over the web UI has also been verified to burn a permanent marker into the chip's eFuse, which appears to record that the device has run non-Shelly firmware. It does not change how the device works and it does not block a return to stock, but it cannot be removed. See [The eFuse marker](#the-efuse-marker) for additional detail.
 
@@ -36,7 +36,11 @@ None of this is a criticism of Shelly. The device is deliberately flashable, whi
 
 Shelly devices are provisioned at the factory with per-device keys and certificates. These authenticate the device to Shelly Cloud and to the official OTA update service, and they are unique per device.
 
-The keys reside in flash, in a factory or NVS type partition. A full-chip backup captures them regardless of which partition they sit in, because it copies every byte of the 8MB flash. Anything bound to eFuse, the one-time-programmable silicon, cannot be erased by flashing and survives no matter what you do. The recoverable-or-not question is therefore entirely about the flash-resident, and therefore entirely about whether your backup captured them. Restore the full flash image and the keys come back. Lose the image and they are gone.
+The keys reside in flash. On the one unit inspected so far, a Shelly 2PM Gen4, Shelly's `shelly` partition at `0x7f0000` (64KB) holds the Shelly Cloud key and the Matter and Zigbee factory credentials: the Matter attestation certificates and their private key, the Matter setup codes and verifier, and a Zigbee install code. The format is documented in [Stock Flash Partitions](PARTITIONS.md). Which keys the official OTA service depends on, and where they are kept, and whether the stock `nvs` holds other per-device data, has not been determined. A full-chip backup captures all of it regardless of which partition it sits in, because it copies every byte of the 8MB flash.
+
+Anything bound to eFuse, the one-time-programmable silicon, cannot be erased by flashing and survives no matter what you do. The recoverable-or-not question is therefore entirely about the flash-resident keys, and therefore entirely about whether your backup captured them. Restore the full flash image and the keys come back. Lose the image and they are gone.
+
+The web UI package has no part for the `shelly` partition, and on that 2PM Gen4 it was still intact after a web UI install. That does not make a web UI install reversible. By its manifest the install replaces the bootloader and partition table, overwrites `app_0`, and blanks `nvs` and `fs_0`, and a return to stock without a UART backup has not been tested.
 
 ---
 
@@ -71,7 +75,7 @@ For the exact backup and restore steps, see [Restoring stock firmware](FLASHING.
 
 Shelly's web UI installs firmware by uploading a file over the network, with no UART connection. This path is confirmed working on the Shelly 1 Gen4 and Shelly 1 Mini Gen4 and verified on stock firmware 1.7.0, 1.7.5, and 2.0.0. For the steps, see [Flash with the Shelly web UI](FLASHING.md#flash-with-the-shelly-web-ui).
 
-A web UI flash cannot read the chip before writing, so no full-chip backup can be made, and the factory keys cannot be saved. A device flashed this way cannot be returned to a fully functional stock state unless a UART backup was captured first.
+A web UI flash cannot read the chip before writing, so no full-chip backup can be made, and what the install overwrites cannot be saved. The `shelly` partition is left in place, but that alone has not been shown to be enough to restore stock. A device flashed this way cannot be returned to a fully functional stock state unless a UART backup was captured first.
 
 The web UI is the easiest way in, and a UART backup is the only way back. If keeping the option to restore to stock matters to you, take a full-chip UART backup before flashing over the web UI or use the UART flash path which captures that backup as part of flashing.
 
@@ -106,6 +110,7 @@ A running record of what has been tested, scoped to the exact conditions.
 - [Power Consumption](POWER.md) — measured draw and the Thread Router design choice
 - [Building from Source](BUILDING.md) — compiling the firmware yourself
 - [GPIO Map](GPIO.md) — ESP-Shelly-C68F pin assignments for Gen4 devices
+- [Stock Flash Partitions](PARTITIONS.md) — stock flash layout and the factory `shelly` partition
 - [Certification](CERTIFICATION.md) — uncertified status and test credentials
 - [Roadmap](ROADMAP.md) — current known limitations and planned work
 - [Contributing](CONTRIBUTING.md) — reporting bugs and the firmware filename convention
