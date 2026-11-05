@@ -19,6 +19,8 @@
 #pragma once
 
 #include <esp_err.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef enum {
     LED_STATE_OFF,                  // LED off (idle, not advertising)
@@ -27,6 +29,8 @@ typedef enum {
     LED_STATE_THREAD_CONNECTED,     // Solid on — fully operational
     LED_STATE_FAULT,                // Very rapid blink — error condition
     LED_STATE_IDENTIFY,             // Asymmetric blink — Matter Identify command
+    LED_STATE_MODE_ARMED,           // Double blink — button held in the SW input mode window
+    LED_STATE_MODE_CONFIRM,         // N slow blinks — SW input mode changed, then restores
 
 } led_state_t;
 
@@ -41,3 +45,14 @@ void status_led_start_identify(void);
 
 // Exit Identify mode. Restores previous state.
 void status_led_stop_identify(void);
+
+// SW input mode button gesture feedback. These overlay the current state
+// and restore it afterwards; connectivity changes that arrive meanwhile
+// are kept and applied on restore.
+
+// Show (true) or clear (false) the "release now to change mode" pattern.
+void status_led_mode_armed(bool armed);
+
+// Blink `blinks` times to confirm the newly selected mode (1 = toggle,
+// 2 = momentary), then restore the previous state.
+void status_led_mode_confirm(uint8_t blinks);

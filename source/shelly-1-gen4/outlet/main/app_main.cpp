@@ -30,11 +30,11 @@
 #include <log_heap_numbers.h>
 
 #include <app_priv.h>
-#include <app_reset.h>
 #include <status_led.h>
 #include <button.h>
 #include <thermal.h>
 #include <switch_input.h>
+#include <input_mode.h>
 #include <relay.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -248,7 +248,9 @@ extern "C" void app_main()
     thermal_init();
     switch_input_init();
     shelly_button_handle_t button_handle = button_init();
-    app_reset_button_register(button_handle);
+    // Factory reset is handled inside the button module (10s hold, then
+    // release), not by app_reset; see button.cpp.
+    (void)button_handle;
 
     // Create a Matter node and add the mandatory Root Node device type on endpoint 0
     node::config_t node_config;
@@ -291,6 +293,13 @@ extern "C" void app_main()
     endpoint = endpoint::secondary_network_interface::create(node, &secondary_network_interface_config, ENDPOINT_FLAG_NONE, nullptr);
     ABORT_APP_ON_FAILURE(endpoint != nullptr, ESP_LOGE(TAG, "Failed to create secondary network interface endpoint"));
 #endif
+
+    // Mode Select endpoint choosing how the SW terminal is read: toggle
+    // (latching wall switch, the default) or momentary (bell press).
+    // Created last so existing endpoint ids stay stable for devices
+    // upgrading over OTA. The selection persists in NVS.
+    err = input_mode_create_endpoint(node);
+    ABORT_APP_ON_FAILURE(err == ESP_OK, ESP_LOGE(TAG, "Failed to create SW input mode endpoint"));
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     // Set OpenThread platform config

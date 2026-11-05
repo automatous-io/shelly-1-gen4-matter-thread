@@ -27,8 +27,13 @@ typedef void *shelly_button_handle_t;
 // Configures the onboard button as an active-low input. On press-down,
 // toggles the OnOff attribute on the relay endpoint.
 //
-// The returned handle can be passed to app_reset_button_register() to
-// also wire factory-reset behavior to the same physical button.
+// Holding the button for 3-7 seconds switches the SW input mode between
+// toggle and momentary (see input_mode.h). The status LED double-blinks
+// while a release would change the mode, then confirms with one blink
+// (toggle) or two (momentary); the relay returns to its pre-press state.
+// Holding for 10 seconds or more and releasing factory resets the device.
+//
+// Factory reset is handled here, not by app_reset_button_register().
 //
 // Returns a button handle on success, NULL on failure.
 shelly_button_handle_t button_init(void);
