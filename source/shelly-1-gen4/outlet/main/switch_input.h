@@ -22,13 +22,21 @@
 
 // Initialize the wall switch input (GPIO10 on Shelly 1 Gen4).
 //
-// Configures GPIO10 as an interrupt-driven input. On any edge (rising
-// or falling), debounces for 50ms and then toggles the Matter OnOff
-// attribute on the relay endpoint.
+// Configures GPIO10 as an interrupt-driven input. An edge wakes a task
+// that samples the pin until its level has held steady for the debounce
+// window. Only a settled change of level counts; a burst that settles
+// back where it started is treated as noise and ignored.
 //
-// This implements the "Toggle" behavior expected when wiring a standard
-// wall switch to the SW terminal — every flip of the switch toggles the
-// relay state, regardless of switch position.
+// What a settled change does depends on the SW input mode (input_mode.h):
+//
+// - Toggle (default): any change of position toggles the relay, so a
+//   standard latching wall switch works from either position.
+// - Momentary: only a change to closed (a press) toggles the relay; the
+//   release does nothing. Presses closer together than a short lockout
+//   are ignored, to absorb contact chatter on cheap bell pushes.
+//
+// The mode is read on every event, so a change takes effect on the next
+// press without a reboot.
 //
 // HARDWARE NOTE: The Shelly 1 Gen4 PCB has an external pull resistor
 // on GPIO10. Do not enable the internal pullup or pulldown — internal

@@ -56,3 +56,24 @@ esp_err_t app_driver_relay_set_defaults(uint16_t endpoint_id)
 
     return err;
 }
+
+bool app_driver_relay_get(void)
+{
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    attribute_t *attribute = attribute::get(relay_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id);
+    attribute::get_val(attribute, &val);
+    return val.val.b;
+}
+
+esp_err_t app_driver_relay_update(bool on)
+{
+    // update() takes the CHIP stack lock and runs the attribute callback,
+    // which drives the relay through relay_set().
+    esp_matter_attr_val_t val = esp_matter_bool(on);
+    return attribute::update(relay_endpoint_id, OnOff::Id, OnOff::Attributes::OnOff::Id, &val);
+}
+
+esp_err_t app_driver_relay_toggle(void)
+{
+    return app_driver_relay_update(!app_driver_relay_get());
+}

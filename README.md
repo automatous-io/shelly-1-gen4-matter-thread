@@ -90,7 +90,7 @@ Once it is up and running, [updates are available](docs/UPDATING.md) through Hom
 - Shelly web UI install, with no UART adapter required (unless you want [reversibility](docs/REVERSIBILITY.md)).
 - Updates through Home Assistant with Matter OTA.
 - Physical button toggle on the onboard relay button.
-- External wall switch input on the SW terminal.
+- External wall switch input on the SW terminal. On the Shelly 1 Gen4 Outlet it accepts a latching wall switch or a momentary push button (bell press), selectable from Home Assistant or the onboard button. See [SW input mode](docs/COMMISSIONING.md#sw-input-mode-outlet).
 - Configurable power-on behavior through the Matter StartUpOnOff attribute.
 - Status LED indication for BLE advertising, Thread connecting, and Thread connected.
 - Identify support. Blink the LED on command from any Matter controller to locate the device.

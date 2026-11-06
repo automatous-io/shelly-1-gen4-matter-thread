@@ -14,6 +14,7 @@ This guide covers pairing a freshly flashed Shelly Gen4 device to your smart hom
 - [Google Home, Alexa, Home Assistant](#google-home-alexa-home-assistant)
 - [Commissioning to multiple ecosystems](#commissioning-to-multiple-ecosystems)
 - [Opener variant](#opener-variant)
+- [SW input mode (Outlet)](#sw-input-mode-outlet)
 - [Troubleshooting](#troubleshooting)
 - [Factory reset](#factory-reset)
 
@@ -30,6 +31,8 @@ The LED follows Shelly's standard convention. A solid LED means connected and wo
 | Slow blink | ~1s on, 1s off | Joining Thread network |
 | Solid on | Continuous | Connected and operational |
 | Identify blink | 100ms on, 900ms off | Identify command active |
+| Double blink | Two 100ms flashes, every second | Onboard button held in the SW input mode window. Release to change mode (Outlet) |
+| Slow blinks, then previous pattern | One or two 300ms flashes | SW input mode changed: one for Toggle, two for Momentary (Outlet) |
 
 ---
 
@@ -104,6 +107,40 @@ Home Assistant exposes the Opener as a switch for the trigger and a binary senso
 
 ---
 
+## SW input mode (Outlet)
+
+The Outlet variant reads the SW terminal in one of two modes.
+
+- **Toggle switch** (default). For a standard latching wall switch. Every change of position toggles the relay, so the switch works from either position and does not need to match the relay state.
+- **Momentary (bell press)**. For a spring-return push button. Each press toggles the relay. Releasing the button does nothing, and holding it does nothing more.
+
+The mode is stored on the device. It survives reboots and updates, and a [factory reset](#factory-reset) returns it to Toggle. It is exposed as a separate Matter Mode Select endpoint named "SW input mode".
+
+### Home Assistant
+
+The mode appears as a select entity on the device. Choose Toggle switch or Momentary (bell press). The change applies to the next press, with no restart.
+
+### chip-tool
+
+```bash
+chip-tool modeselect change-to-mode 1 <node-id> <endpoint-id>   # Momentary
+chip-tool modeselect change-to-mode 0 <node-id> <endpoint-id>   # Toggle
+```
+
+The endpoint is the last one on the device. `chip-tool descriptor read parts-list <node-id> 0` lists them.
+
+### Onboard button (any ecosystem)
+
+Apple Home and Google Home do not show Mode Select, so the onboard relay button can change the mode instead.
+
+1. Press and hold the button. The relay toggles as usual.
+2. After about 3 seconds the status LED starts a double blink.
+3. Release while it is double-blinking, which lasts until about 7 seconds. The LED blinks once for Toggle or twice for Momentary, and the relay returns to where it was before you pressed.
+
+Releasing before the double blink, or after it stops, does not change the mode. Releasing between 7 and 10 seconds does nothing. A hold of 10 seconds or more is a [factory reset](#factory-reset).
+
+---
+
 ## Troubleshooting
 
 ### Commissioning hangs in Home Assistant
@@ -119,7 +156,7 @@ If Home Assistant's Matter integration hangs during commissioning or shows "sett
 
 ## Factory reset
 
-Hold the onboard relay button for several seconds. On this firmware that clears the device's Matter commissioning and returns it to BLE commissioning mode. It does not restore the original Shelly firmware or factory state; the Automatous firmware stays installed, and going back to stock requires the UART backup (see [Reversibility](REVERSIBILITY.md)). The LED returns to the rapid blink pattern from the [status LED reference](#status-led-reference), which confirms the reset worked. Remove the device from any ecosystems you added it to before re-commissioning.
+Hold the onboard relay button, then release. On the Outlet variant from 2.2.0, hold for at least 10 seconds. On other variants, the reset arms after about 1.5 seconds. On this firmware that clears the device's Matter commissioning and returns it to BLE commissioning mode. It does not restore the original Shelly firmware or factory state; the Automatous firmware stays installed, and going back to stock requires the UART backup (see [Reversibility](REVERSIBILITY.md)). The LED returns to the rapid blink pattern from the [status LED reference](#status-led-reference), which confirms the reset worked. Remove the device from any ecosystems you added it to before re-commissioning.
 
 ---
 

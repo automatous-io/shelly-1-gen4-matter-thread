@@ -32,6 +32,23 @@ static const char *TAG = "status_led";
 static volatile led_state_t current_state = LED_STATE_OFF;
 static volatile led_state_t pre_identify_state = LED_STATE_OFF;
 
+// SW input mode gesture overlay: the state to restore afterwards, and the
+// confirmation blink count and start time.
+static volatile led_state_t pre_overlay_state = LED_STATE_OFF;
+static volatile uint8_t confirm_blinks = 0;
+static volatile uint32_t confirm_start_ms = 0;
+
+// Confirmation blink timing: 300ms on, 300ms off per blink, then a pause
+// before the previous state returns so the last blink reads clearly.
+#define CONFIRM_BLINK_PERIOD_MS 600
+#define CONFIRM_BLINK_ON_MS     300
+#define CONFIRM_TAIL_MS         600
+
+static bool is_overlay_state(led_state_t state)
+{
+    return state == LED_STATE_MODE_ARMED || state == LED_STATE_MODE_CONFIRM;
+}
+
 static void status_led_task(void *arg)
 {
     bool led_on = false;
@@ -74,6 +91,27 @@ static void status_led_task(void *arg)
             led_on = (now % 1000) < 100;
             gpio_set_level(STATUS_LED_GPIO, led_on ? LED_ON_LEVEL : LED_OFF_LEVEL);
             break;
+
+        case LED_STATE_MODE_ARMED: {
+            // Double blink: on 100, off 100, on 100, off 700 (1000ms period).
+            // Distinct from every connectivity pattern while the button is held.
+            uint32_t phase = now % 1000;
+            led_on = phase < 100 || (phase >= 200 && phase < 300);
+            gpio_set_level(STATUS_LED_GPIO, led_on ? LED_ON_LEVEL : LED_OFF_LEVEL);
+            break;
+        }
+
+        case LED_STATE_MODE_CONFIRM: {
+            uint32_t elapsed = now - confirm_start_ms;
+            uint32_t blink_span = confirm_blinks * CONFIRM_BLINK_PERIOD_MS;
+            if (elapsed >= blink_span + CONFIRM_TAIL_MS) {
+                current_state = pre_overlay_state;
+                break;
+            }
+            led_on = elapsed < blink_span && (elapsed % CONFIRM_BLINK_PERIOD_MS) < CONFIRM_BLINK_ON_MS;
+            gpio_set_level(STATUS_LED_GPIO, led_on ? LED_ON_LEVEL : LED_OFF_LEVEL);
+            break;
+        }
         }
 
         vTaskDelay(pdMS_TO_TICKS(period_ms));
@@ -111,6 +149,12 @@ esp_err_t status_led_init(void)
 
 void status_led_set_state(led_state_t state)
 {
+    // During the mode gesture overlay, remember the new state for the
+    // restore instead of cutting the feedback short.
+    if (is_overlay_state(current_state)) {
+        pre_overlay_state = state;
+        return;
+    }
     if (state != current_state) {
         ESP_LOGI(TAG, "LED state change: %d -> %d", current_state, state);
         current_state = state;
@@ -138,4 +182,25 @@ void status_led_stop_identify(void)
     } else {
         ESP_LOGI(TAG, "Identify stop called but not identifying (state=%d)", current_state);
     }
+}
+void status_led_mode_armed(bool armed)
+{
+    if (armed) {
+        if (!is_overlay_state(current_state)) {
+            pre_overlay_state = current_state;
+        }
+        current_state = LED_STATE_MODE_ARMED;
+    } else if (current_state == LED_STATE_MODE_ARMED) {
+        current_state = pre_overlay_state;
+    }
+}
+
+void status_led_mode_confirm(uint8_t blinks)
+{
+    if (!is_overlay_state(current_state)) {
+        pre_overlay_state = current_state;
+    }
+    confirm_blinks = blinks;
+    confirm_start_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+    current_state = LED_STATE_MODE_CONFIRM;
 }

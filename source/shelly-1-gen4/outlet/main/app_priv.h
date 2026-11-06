@@ -59,6 +59,20 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
 
 esp_err_t app_driver_relay_set_defaults(uint16_t endpoint_id);
 
+// Local relay control for the physical inputs (SW terminal and onboard
+// button). These go through the Matter OnOff attribute rather than
+// relay_set() directly, so controllers see the change and the attribute
+// callback still applies the relay's safety checks (thermal latch).
+
+// Current value of the relay endpoint's OnOff attribute.
+bool app_driver_relay_get(void);
+
+// Set the relay endpoint's OnOff attribute.
+esp_err_t app_driver_relay_update(bool on);
+
+// Invert the relay endpoint's OnOff attribute.
+esp_err_t app_driver_relay_toggle(void);
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()                                           \
     {                                                                                   \

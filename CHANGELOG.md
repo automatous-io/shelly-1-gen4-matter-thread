@@ -103,6 +103,18 @@ First release of the Opener variant. Matter On/Off Plug-in Unit plus a Contact S
 
 ## Shelly 1 Gen4 Outlet
 
+### [2.2.0] - Unreleased
+
+Momentary (bell press) switch support on the SW terminal, selectable at runtime. Existing installs keep the toggle behavior after updating.
+
+#### Added
+- SW input mode, exposed as a Matter Mode Select endpoint appended after the existing endpoints, so endpoint ids are unchanged over OTA. Two modes: Toggle switch (default, the previous behavior) and Momentary (bell press), where each press toggles the relay and the release does nothing. Changed with the ModeSelect ChangeToMode command, for example from a Home Assistant select entity or chip-tool. The selection persists across reboots and OTA updates; a factory reset returns it to Toggle.
+- Onboard button gesture for controllers without Mode Select support. Holding the button for 3 to 7 seconds and releasing while the status LED double-blinks switches the mode. The LED confirms with one blink for Toggle or two for Momentary, and the relay returns to its state before the press.
+
+#### Changed
+- Factory reset now needs a 10-second hold, then release. The 10000ms set in `sdkconfig.defaults.c6_thread_shelly` was outside the button component's 500 to 5000ms range and was ignored, so earlier builds armed the reset after 1.5 seconds. The hold is now timed in the button module, which also leaves room for the mode gesture.
+- SW input debounce is now level-based. After an edge the input is sampled until it holds one level for 30ms, and only a settled change of position acts. Noise that settles back to the starting level no longer toggles the relay, and the position at boot never counts as a change.
+
 ### [1.0.0] - 2026-06-19
 
 First release of the Outlet variant. Matter On/Off Plug-in Unit with latching relay behavior, built on the Light v1.2.1 module foundation and relay safety contract.
