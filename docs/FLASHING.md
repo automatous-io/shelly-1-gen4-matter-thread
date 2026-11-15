@@ -86,7 +86,7 @@ The wiring, pinout, and photos in this section are the Shelly 1 Gen4's 7-pin pro
 
 ## CP2102 to Shelly wiring
 
-> Full pinout and hardware overview: [Shelly 1 Gen4 Knowledge Base](https://kb.shelly.cloud/knowledge-base/shelly-1-gen4-anz)
+> Full pinout and hardware overview: [Shelly 1 Gen4 Knowledge Base]([https://kb.shelly.cloud/knowledge-base/shelly-1-gen4-anz](https://kb.shelly.cloud/knowledge-base/shelly-1-gen4-anz#Add-on-interface))
 
 | CP2102 | Shelly 1 Gen4 |
 |--------|---------------|
